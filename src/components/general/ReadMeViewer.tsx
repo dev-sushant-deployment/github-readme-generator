@@ -27,10 +27,9 @@ export const ReadMeViewer: React.FC<ReadMeViewerProps> = ({ markdown, generating
       </div>
       <TabsContent value="preview" className="px-4 py-2 mt-0 bg-muted">
         <ReactMarkdown
-          children={markdown}
           remarkPlugins={[remarkGfm]}
           components={markdownComponents}
-        />
+        >{markdown}</ReactMarkdown>
       </TabsContent>
       <TabsContent value="raw" className="px-4 py-2 bg-muted mt-0">
         <pre className="text-wrap">{markdown}</pre>

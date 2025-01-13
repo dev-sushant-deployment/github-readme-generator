@@ -6,6 +6,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { mkdir, rm, unlink, writeFile } from "fs/promises";
 import { Open } from "unzipper";
 
+interface ErrorType {
+  message?: string;
+  status: number;
+}
+
 const extractFiles = (path: string, files: {name: string, content: string}[] = []) => {
   const dir = readdirSync(path, { withFileTypes: true });
   for (const dirent of dir) {
@@ -85,7 +90,7 @@ export async function GET(req: NextRequest) {
       });
       return new NextResponse(stream, { headers });
     } catch (error) {
-      return customError({ message: (error as any).message, status: (error as any).status || 500 });
+      return customError({ message: (error as ErrorType).message, status: (error as ErrorType).status || 500 });
     }
   } else return NextResponse.json({ error: "URL parameter is required" }, { status: 400 });
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ReactNode } from "react";
 import { Prism as SyntaxHighlighter, SyntaxHighlighterProps } from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -5,8 +6,7 @@ import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 interface CodeProps {
   children: ReactNode;
   className?: string;
-  node?: any;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const markdownComponents: { [key: string]: React.ElementType } = {
@@ -24,7 +24,7 @@ export const markdownComponents: { [key: string]: React.ElementType } = {
     <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-500 my-4">{children}</blockquote>
   ),
   code: (props: CodeProps) => {
-    const { children, className, node, ...rest } = props;
+    const { children, className, ...rest } = props;
     const match = /language-(\w+)/.exec(className || "");
     return match ? (
       <SyntaxHighlighter
@@ -57,7 +57,7 @@ export const markdownComponents: { [key: string]: React.ElementType } = {
   tr: ({ children }: { children: ReactNode }) => <tr className="border-b border-gray-300">{children}</tr>,
   th: ({ children }: { children: ReactNode }) => <th className="px-4 py-2 text-left font-medium text-gray-600 border border-gray-300">{children}</th>,
   td: ({ children }: { children: ReactNode }) => <td className="px-4 py-2 text-gray-600 border border-gray-300">{children}</td>,
-  img: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} className="rounded-lg max-w-full h-auto my-4" />,
+  img: ({ src, alt }: { src: string; alt: string }) => <Image src={src} alt={alt} className="rounded-lg max-w-full h-auto my-4" />,
   strong: ({ children }: { children: ReactNode }) => <strong className="font-semibold text-gray-700">{children}</strong>,
   em: ({ children }: { children: ReactNode }) => <em className="italic text-gray-600">{children}</em>,
   del: ({ children }: { children: ReactNode }) => <del className="line-through text-gray-400">{children}</del>,

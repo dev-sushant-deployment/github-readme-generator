@@ -39,10 +39,14 @@ export const GenerateReadme = () => {
         const { message } = JSON.parse((event as ErrorEvent).data as unknown as string);
         setError(message);
       }
-    } catch (error) {
+    } catch {
       setGenerating(false);
       setError("Failed to generate README. Please try again later.");
     }
+  }
+
+  const trackRepo = async () => {
+    toast.info("Feature coming soon!");
   }
 
   useEffect(() => {
@@ -88,7 +92,7 @@ export const GenerateReadme = () => {
         <Button
           className="py-5"
           disabled={generating || !url || !url.match(/^https:\/\/github.com\/[^/]+\/[^/]+\/?$/)}
-          onClick={generateReadme}
+          onClick={!generating && markdown ? trackRepo : generateReadme}
         >
           {generating ?
             <div className="flex items-center gap-2">
@@ -96,7 +100,10 @@ export const GenerateReadme = () => {
               <span>Generating README...</span>
             </div>
             :
-            "Generate README"
+            markdown ?
+              "Track Repo"
+              :
+              "Generate README"
           }
         </Button>
       </div>
