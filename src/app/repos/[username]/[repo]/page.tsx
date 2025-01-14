@@ -4,6 +4,7 @@ import { CommitStatusBadge } from "@/components/client/CommitStatusBadge";
 import { ViewReadmeLink } from "@/components/client/ViewReadmeLink";
 import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/constants";
+import { CommitStatus } from "@prisma/client";
 // import { demoCommits, demoRepoStats } from "@/demoData";
 import { ArrowLeft, Calendar, GitBranch, Github, Star, Users } from "lucide-react";
 import Link from "next/link";
@@ -118,11 +119,16 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
             Repository Tracking Feature will be available soon. Stay Tuned!
           </p>}
         {process.env.NODE_ENV === "development" && commits.length === 0 && <p className="text-gray-500 text-3xl text-center">Repository will be tracked from Now</p>}
-        {process.env.NODE_ENV === "development" && commits.map((commit, index) => (
+        {process.env.NODE_ENV === "development" && commits.map((commit : {
+          id: string;
+          status: string;
+          message: string;
+          createdAt: Date;
+        }, index) => (
           <div key={commit.id} className={`w-full p-3 flex justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
             <div className="space-y-2">
               <div className="flex gap-3 items-center">
-                <CommitStatusBadge commit_id={commit.id} status={commit.status} />
+                <CommitStatusBadge commit_id={commit.id} status={commit.status as CommitStatus} />
                 <p className="text-lg font-bold">{commit.message}</p>
               </div>
               <div className="flex gap-3 items-center text-sm text-gray-500">
@@ -130,7 +136,7 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
                 <span suppressHydrationWarning>{commit.createdAt.toLocaleDateString()}</span>
               </div>
             </div>
-            <ViewReadmeLink commit_id={commit.id} status={commit.status} />
+            <ViewReadmeLink commit_id={commit.id} status={commit.status as CommitStatus} />
           </div>
         ))}
       </div>
