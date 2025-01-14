@@ -22,7 +22,7 @@ export default function RootLayout({
           theme="light"
           position="top-center"
         />
-        <div className="min-h-lvh flex flex-col justify-between">
+        <div className="min-h-lvh flex flex-col justify-between items-center">
           <Navbar />
           {children}
           <Footer />

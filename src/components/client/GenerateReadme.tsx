@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { ACCESS_TOKEN } from "@/constants";
+import { addRepo } from "@/actions/repo";
+import { customError } from "@/lib/error";
+import { useRouter } from "next/navigation";
 
 interface ErrorEvent extends Event {
   data: {
@@ -15,6 +19,7 @@ interface ErrorEvent extends Event {
 }
 
 export const GenerateReadme = () => {
+  const router = useRouter();
   const [url, setUrl] = useState("");
   const [markdown, setMarkdown] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -46,7 +51,23 @@ export const GenerateReadme = () => {
   }
 
   const trackRepo = async () => {
-    toast.info("Feature coming soon!");
+    if (!localStorage.getItem(ACCESS_TOKEN)) {
+      toast.info("Please connect to Github to track repositories.");
+      return;
+    }
+    const access_token = localStorage.getItem(ACCESS_TOKEN);
+    const toastId = toast.loading("Adding repository...");
+    document.title = "Adding Repository...";
+    try {
+      const { username, error } = await addRepo(url, access_token as string);
+      if (error) throw new Error(error);
+      toast.success("Repository added successfully!", { id: toastId });
+      document.title = "Github Readme Generator";
+      router.push(`/repos/${username}`);
+    } catch (error) {
+      customError(error, toastId);
+      document.title = "Github Readme Generator";
+    }
   }
 
   useEffect(() => {
@@ -72,10 +93,11 @@ export const GenerateReadme = () => {
         setToastId(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [generating, error])
 
   useEffect(() => {
-    if (generating && markdown) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    if (generating && markdown && window) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }, [generating, markdown])
 
   return (
