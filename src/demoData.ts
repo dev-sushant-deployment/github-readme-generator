@@ -52,7 +52,7 @@ export const demoRepoStats = {
 export const demoCommits : {
   id: string;
   message: string;
-  updatedAt: Date;
+  createdAt: Date;
   status: CommitStatus; // CHECKING | GENERATING | UPDATED | NO_CHANGES
   markdown: string | null; // null if status is CHECKING | NO_CHANGES
   // In demodata include all types of commit status, with 30 commits in total
@@ -60,210 +60,210 @@ export const demoCommits : {
   {
     id: "1",
     message: "Initial commit",
-    updatedAt: new Date("2022-01-01T00:00:00Z"),
+    createdAt: new Date("2022-01-01T00:00:00Z"),
     status: "CHECKING",
     markdown: "Initial commit with basic setup"
   },
   {
     id: "2",
     message: "Added README",
-    updatedAt: new Date("2022-01-02T00:00:00Z"),
+    createdAt: new Date("2022-01-02T00:00:00Z"),
     status: "GENERATING",
     markdown: "Added README file with project description"
   },
   {
     id: "3",
     message: "Setup CI/CD",
-    updatedAt: new Date("2022-01-03T00:00:00Z"),
+    createdAt: new Date("2022-01-03T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Configured CI/CD pipeline"
   },
   {
     id: "4",
     message: "Refactored codebase",
-    updatedAt: new Date("2022-01-04T00:00:00Z"),
+    createdAt: new Date("2022-01-04T00:00:00Z"),
     status: "UPDATED",
     markdown: "Refactored code for better readability"
   },
   {
     id: "5",
     message: "Fixed bugs",
-    updatedAt: new Date("2022-01-05T00:00:00Z"),
+    createdAt: new Date("2022-01-05T00:00:00Z"),
     status: "UPDATED",
     markdown: "Fixed several bugs reported by users"
   },
   {
     id: "6",
     message: "Added new feature",
-    updatedAt: new Date("2022-01-06T00:00:00Z"),
+    createdAt: new Date("2022-01-06T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Implemented new feature for user management"
   },
   {
     id: "7",
     message: "Updated dependencies",
-    updatedAt: new Date("2022-01-07T00:00:00Z"),
+    createdAt: new Date("2022-01-07T00:00:00Z"),
     status: "UPDATED",
     markdown: "Updated project dependencies to latest versions"
   },
   {
     id: "8",
     message: "Improved performance",
-    updatedAt: new Date("2022-01-08T00:00:00Z"),
+    createdAt: new Date("2022-01-08T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Optimized code for better performance"
   },
   {
     id: "9",
     message: "Code cleanup",
-    updatedAt: new Date("2022-01-09T00:00:00Z"),
+    createdAt: new Date("2022-01-09T00:00:00Z"),
     status: "UPDATED",
     markdown: "Removed unused code and files"
   },
   {
     id: "10",
     message: "Added tests",
-    updatedAt: new Date("2022-01-10T00:00:00Z"),
+    createdAt: new Date("2022-01-10T00:00:00Z"),
     status: "FAILED",
     markdown: "Added unit tests for core modules"
   },
   {
     id: "11",
     message: "Checking for updates",
-    updatedAt: new Date("2022-01-11T00:00:00Z"),
+    createdAt: new Date("2022-01-11T00:00:00Z"),
     status: "UPDATED",
     markdown: null
   },
   {
     id: "12",
     message: "Generating new content",
-    updatedAt: new Date("2022-01-12T00:00:00Z"),
+    createdAt: new Date("2022-01-12T00:00:00Z"),
     status: "UPDATED",
     markdown: null
   },
   {
     id: "13",
     message: "No changes detected",
-    updatedAt: new Date("2022-01-13T00:00:00Z"),
+    createdAt: new Date("2022-01-13T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: null
   },
   {
     id: "14",
     message: "Updated documentation",
-    updatedAt: new Date("2022-01-14T00:00:00Z"),
+    createdAt: new Date("2022-01-14T00:00:00Z"),
     status: "UPDATED",
     markdown: "Updated project documentation"
   },
   {
     id: "15",
     message: "Added logging",
-    updatedAt: new Date("2022-01-15T00:00:00Z"),
+    createdAt: new Date("2022-01-15T00:00:00Z"),
     status: "UPDATED",
     markdown: "Implemented logging for debugging"
   },
   {
     id: "16",
     message: "Enhanced security",
-    updatedAt: new Date("2022-01-16T00:00:00Z"),
+    createdAt: new Date("2022-01-16T00:00:00Z"),
     status: "UPDATED",
     markdown: "Enhanced security measures"
   },
   {
     id: "17",
     message: "Improved UI",
-    updatedAt: new Date("2022-01-17T00:00:00Z"),
+    createdAt: new Date("2022-01-17T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Improved user interface for better UX"
   },
   {
     id: "18",
     message: "Refactored tests",
-    updatedAt: new Date("2022-01-18T00:00:00Z"),
+    createdAt: new Date("2022-01-18T00:00:00Z"),
     status: "UPDATED",
     markdown: "Refactored tests for better coverage"
   },
   {
     id: "19",
     message: "Fixed deployment issues",
-    updatedAt: new Date("2022-01-19T00:00:00Z"),
+    createdAt: new Date("2022-01-19T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Fixed issues with deployment scripts"
   },
   {
     id: "20",
     message: "Added API endpoints",
-    updatedAt: new Date("2022-01-20T00:00:00Z"),
+    createdAt: new Date("2022-01-20T00:00:00Z"),
     status: "UPDATED",
     markdown: "Added new API endpoints for data retrieval"
   },
   {
     id: "21",
     message: "Updated UI components",
-    updatedAt: new Date("2022-01-21T00:00:00Z"),
+    createdAt: new Date("2022-01-21T00:00:00Z"),
     status: "UPDATED",
     markdown: "Updated UI components for consistency"
   },
   {
     id: "22",
     message: "Improved error handling",
-    updatedAt: new Date("2022-01-22T00:00:00Z"),
+    createdAt: new Date("2022-01-22T00:00:00Z"),
     status: "NO_CHANGES",
     markdown: "Improved error handling mechanisms"
   },
   {
     id: "23",
     message: "Optimized database queries",
-    updatedAt: new Date("2022-01-23T00:00:00Z"),
+    createdAt: new Date("2022-01-23T00:00:00Z"),
     status: "UPDATED",
     markdown: "Optimized database queries for performance"
   },
   {
     id: "24",
     message: "Added caching",
-    updatedAt: new Date("2022-01-24T00:00:00Z"),
+    createdAt: new Date("2022-01-24T00:00:00Z"),
     status: "UPDATED",
     markdown: "Implemented caching for faster data retrieval"
   },
   {
     id: "25",
     message: "Updated build scripts",
-    updatedAt: new Date("2022-01-25T00:00:00Z"),
+    createdAt: new Date("2022-01-25T00:00:00Z"),
     status: "UPDATED",
     markdown: "Updated build scripts for automation"
   },
   {
     id: "26",
     message: "Fixed UI bugs",
-    updatedAt: new Date("2022-01-26T00:00:00Z"),
+    createdAt: new Date("2022-01-26T00:00:00Z"),
     status: "UPDATED",
     markdown: "Fixed several UI bugs reported by users"
   },
   {
     id: "27",
     message: "Improved accessibility",
-    updatedAt: new Date("2022-01-27T00:00:00Z"),
+    createdAt: new Date("2022-01-27T00:00:00Z"),
     status: "UPDATED",
     markdown: "Improved accessibility features"
   },
   {
     id: "28",
     message: "Added new tests",
-    updatedAt: new Date("2022-01-28T00:00:00Z"),
+    createdAt: new Date("2022-01-28T00:00:00Z"),
     status: "UPDATED",
     markdown: "Added new tests for recent features"
   },
   {
     id: "29",
     message: "Updated configurations",
-    updatedAt: new Date("2022-01-29T00:00:00Z"),
+    createdAt: new Date("2022-01-29T00:00:00Z"),
     status: "UPDATED",
     markdown: "Updated project configurations"
   },
   {
     id: "30",
     message: "Fixed security vulnerabilities",
-    updatedAt: new Date("2022-01-30T00:00:00Z"),
+    createdAt: new Date("2022-01-30T00:00:00Z"),
     status: "UPDATED",
     markdown: "Fixed identified security vulnerabilities"
   }
