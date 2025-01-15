@@ -25,7 +25,7 @@ export const ViewReadmeLink: React.FC<ViewReadmeLinkProps> = ({ username, repo, 
       channel.unbind_all();
       channel.unsubscribe();
     }
-  }, [])
+  }, [commit_id])
 
   if (status === "CHECKING" || status === "NO_CHANGES" || status === "FAILED") return null;
   return (

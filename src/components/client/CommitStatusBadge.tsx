@@ -65,7 +65,7 @@ export const CommitStatusBadge: React.FC<CommitStatusBadgeProps> = ({ commit_id 
       channel.unbind_all();
       channel.unsubscribe();
     }
-  }, []);
+  }, [commit_id]);
 
   return (
     <Badge variant={variant} className="flex gap-2 items-center rounded-full">

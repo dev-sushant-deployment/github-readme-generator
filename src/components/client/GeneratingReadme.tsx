@@ -23,7 +23,7 @@ export const GeneratingReadme : React.FC<GeneratingReadmeProps> = ({ commit_id }
       channel.unbind_all();
       channel.unsubscribe();
     }
-  }, [])
+  }, [commit_id])
 
   return <ReadMeViewer markdown={markdown} generating={generating} />;
 }
