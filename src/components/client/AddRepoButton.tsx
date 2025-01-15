@@ -11,8 +11,11 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import eventEmitter from "@/lib/eventEmitter";
+import { useRouter } from "next/navigation";
 
 export const AddRepoButton = () => {
+  const router = useRouter();
+
   const [url, setUrl] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -42,6 +45,8 @@ export const AddRepoButton = () => {
       toast.success("Repository added successfully!", { id: toastId });
       eventEmitter.emit("repoAdded", repo);
       setOpen(false);
+      const [owner, repoName] = url.split("/").slice(3, 5);
+      router.push(`/repos/${owner}/${repoName}`);
     } catch (error) {
       customError(error, toastId);
     }

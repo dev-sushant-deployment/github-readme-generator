@@ -1,11 +1,12 @@
 "use server";
 
-import { DEV_WEBHOOK_DOMAIN, PROD_WEBHOOK_DOMAIN } from "@/constants";
+import { DEV_WEBHOOK_DOMAIN, INITIAL_COMMIT_MSG, PROD_WEBHOOK_DOMAIN } from "@/constants";
 import { db } from "@/lib/db";
+import { CommitStatus } from "@prisma/client";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 
-export const addRepo = async (url: string, access_token: string) => {
+export const addRepo = async (url: string, access_token: string, markdown? : string) => {
   if (!url.match(/^https:\/\/github.com\/[^/]+\/[^/]+\/?$/)) return { error: "Invalid URL" };
   const [,,,, repo] = url.split('/');
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is not defined");
@@ -27,6 +28,34 @@ export const addRepo = async (url: string, access_token: string) => {
       }
     });
     if (!repos.find(({ name } : { name : string } & unknown) => name.toLowerCase() === repo.toLowerCase())) return { error: "Repository not found" };
+    const { id } = user;
+    const addedRepo = await db.repo.create({
+      data: {
+        name: repo,
+        ownerId: id
+      }
+    });
+    if (markdown) {
+      await db.commit.create({
+        data: {
+          message: INITIAL_COMMIT_MSG,
+          markdown,
+          status: CommitStatus.UPDATED,
+          repoId: addedRepo.id,
+          authorId: id
+        }
+      });
+    } else {
+      const { id : commitId } = await db.commit.create({
+        data: {
+          message: INITIAL_COMMIT_MSG,
+          status: CommitStatus.CHECKING,
+          repoId: addedRepo.id,
+          authorId: id
+        }
+      });
+      axios.post(`/api/initial-commit/${username}/${repo}`, { commitId });
+    }
     const webhookDomain = process.env.NODE_ENV === "development" ? DEV_WEBHOOK_DOMAIN : PROD_WEBHOOK_DOMAIN;
     const webHookUrl = `${webhookDomain}/api/webhook/${username}/${repo}`;
     const data = {
@@ -44,13 +73,6 @@ export const addRepo = async (url: string, access_token: string) => {
       headers: {
         'Authorization': `token ${pat}`,
         'Content-Type': 'application/json'
-      }
-    });
-    const { id } = user;
-    const addedRepo = await db.repo.create({
-      data: {
-        name: repo,
-        ownerId: id
       }
     });
     return {

@@ -59,7 +59,7 @@ export const GenerateReadme = () => {
     const toastId = toast.loading("Adding repository...");
     document.title = "Adding Repository...";
     try {
-      const { username, error } = await addRepo(url, access_token as string);
+      const { username, error } = await addRepo(url, access_token as string, markdown);
       if (error) throw new Error(error);
       toast.success("Repository added successfully!", { id: toastId });
       document.title = "Github Readme Generator";

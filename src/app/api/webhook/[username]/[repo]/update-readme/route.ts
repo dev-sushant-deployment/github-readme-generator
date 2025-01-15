@@ -3,7 +3,6 @@ import { model } from "@/helper/gemini-ai";
 import { pusher } from "@/helper/Pusher/pusher";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
-import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 interface WebhookRouteParams {
@@ -20,20 +19,26 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
     const user = await db.user.findFirst({
       where: {
         username
-      },
-      select: {
-        id: true,
-        pat: true
       }
     });
     if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
-    const { pat } = user;
-    const { data } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
-      headers: {
-        'Authorization': `token ${pat}`
-      }
-    });
-    const readmeContent = Buffer.from(data.content, "base64").toString('utf-8');
+    const latestCommit = await db.commit.findMany({
+      where: {
+        repo: {
+          name: repo
+        },
+        status: CommitStatus.UPDATED,
+        author: {
+          username
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+      take: 1
+    })
+    if (latestCommit.length == 0) return NextResponse.json({ error: "No previous commit found" }, { status: 404 });
+    const { markdown : readmeContent } = latestCommit[0];
     const prompt = `
       I will provide you with the current README.md content.
       Also I will provide you with the files which have been changed or created, and the patch of the changes.
