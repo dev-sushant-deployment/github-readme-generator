@@ -11,6 +11,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { customError } from "@/lib/error";
+import Link from "next/link";
 
 export const ConnectToGithubButton = () => {
   const { CHECKING, CONNECTED, CONNECTING, DISCONNECTED } = ConnectionType;
@@ -105,10 +106,12 @@ export const ConnectToGithubButton = () => {
   return (
     <>
       {isConnected === CONNECTED ?
-        <Button className="flex items-center justify-between">
-          <Github size={24} />
-          <p>{username}</p>
-        </Button>
+        <Link href={`/repos/${username}`}>
+          <Button className="flex items-center justify-between">
+            <Github size={24} />
+            <p>{username}</p>
+          </Button>
+        </Link>
         :
         isConnected === CONNECTING ?
           <Button className="flex items-center justify-between">
@@ -182,7 +185,7 @@ export const ConnectToGithubButton = () => {
                   <ol className="list-decimal pl-4 space-y-2">
                     <li>Go to GitHub Settings → Developer settings</li>
                     <li>Select Personal access tokens → Tokens (classic)</li>
-                    <li>Generate new token with &lsquo;repo&rsquo; scope</li>
+                    <li>Generate new token with &lsquo;repo&rsquo; scope and &lsquo;admin:repo_hook&rsquo; scope</li>
                   </ol>
                 </div>
                 <DialogFooter>

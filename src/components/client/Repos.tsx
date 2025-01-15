@@ -19,7 +19,7 @@ export const Repos: React.FC<AddRepoButtonProps> = ({ username, initialRepos }) 
     eventEmitter.on("repoAdded", (repo: Repo) => {
       setRepos(prev => [...prev, repo]);
     });
-  }, [setRepos]);
+  }, []);
 
   return (
     <div className={`w-full grid grid-cols-4 gap-2 ${repos.length == 0 ? "flex-grow" : ""}`}>

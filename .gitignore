@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+TODO.txt
+/src/constants.ts
 
 # debug
 npm-debug.log*

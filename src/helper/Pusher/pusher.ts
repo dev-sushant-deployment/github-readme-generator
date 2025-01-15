@@ -1,0 +1,19 @@
+import Pusher from 'pusher'
+
+const { PUSHER_APP_ID, NEXT_PUBLIC_PUSHER_KEY, PUSHER_SECRET, NEXT_PUBLIC_PUSHER_CLUSTER } = process.env;
+
+if (!PUSHER_APP_ID || !NEXT_PUBLIC_PUSHER_KEY || !PUSHER_SECRET || !NEXT_PUBLIC_PUSHER_CLUSTER) {
+  console.log("PUSHER_APP_ID", PUSHER_APP_ID);
+  console.log("NEXT_PUBLIC_PUSHER_KEY", NEXT_PUBLIC_PUSHER_KEY);
+  console.log("PUSHER_SECRET", PUSHER_SECRET);
+  console.log("NEXT_PUBLIC_PUSHER_CLUSTER", NEXT_PUBLIC_PUSHER_CLUSTER);
+  throw new Error('Please provide PUSHER_APP_ID, NEXT_PUBLIC_PUSHER_KEY, PUSHER_SECRET and NEXT_PUBLIC_PUSHER_CLUSTER in .env file');
+}
+
+export const pusher = new Pusher({
+  appId: PUSHER_APP_ID,
+  key: NEXT_PUBLIC_PUSHER_KEY,
+  secret: PUSHER_SECRET,
+  cluster: NEXT_PUBLIC_PUSHER_CLUSTER,
+  useTLS: true
+});

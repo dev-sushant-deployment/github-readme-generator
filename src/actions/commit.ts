@@ -39,3 +39,31 @@ export const getCommits = async (username: string, repo: string, page_no: number
     return { error: "Failed to fetch commits. Please try again later." };
   }
 };
+
+export const getCommit = async (commitId: string) => {
+  try {
+    const commit = await db.commit.findFirst({
+      where: {
+        id: commitId
+      },
+      include: {
+        repo: {
+          select: {
+            name: true,
+          }
+        },
+        author: {
+          select: {
+            username: true
+          }
+        }
+      }
+    });
+    if (!commit) return { error: "Commit not found" };
+    return {
+      commit
+    };
+  } catch {
+    return { error: "Failed to fetch commit. Please try again later." };
+  }
+}

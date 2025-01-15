@@ -1,0 +1,119 @@
+import { COMMIT_EVENT, MARKDOWN_EVENT } from "@/constants";
+import { model } from "@/helper/gemini-ai";
+import { pusher } from "@/helper/Pusher/pusher";
+import { db } from "@/lib/db";
+import { CommitStatus } from "@prisma/client";
+import axios from "axios";
+import { NextRequest, NextResponse } from "next/server";
+
+interface WebhookRouteParams {
+  params: Promise <{
+    username: string;
+    repo: string;
+  }>
+}
+
+export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
+  const { username, repo } = await params;
+  const { files, commitId } = await req.json();
+  try {
+    const user = await db.user.findFirst({
+      where: {
+        username
+      },
+      select: {
+        id: true,
+        pat: true
+      }
+    });
+    if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
+    const { pat } = user;
+    const { data } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
+      headers: {
+        'Authorization': `token ${pat}`
+      }
+    });
+    const readmeContent = Buffer.from(data.content, "base64").toString('utf-8');
+    const prompt = `
+      I will provide you with the current README.md content.
+      Also I will provide you with the files which have been changed or created, and the patch of the changes.
+      I want you to regenerate the README.md content with the new changes.
+  
+      README.md file should be written in markdown format.
+      README.md file should not be too short or too long. It should be concise and informative.
+      It should contain all the necessary information about the repository(project).
+  
+      Your response should only contain the content of the README.md file.
+  
+      If there are no changes in the README.md file, you can should respond with just a message saying "No changes in README.md file".
+  
+      Current README.md content:
+      ${readmeContent}
+  
+      Files changed:
+      ${files.map(({ filename, patch } : { filename : string, patch : string }) => 
+        filename.split('.').pop() != "md" ?
+          `## ${filename}\n\n\`\`\`\n${patch}\n\`\`\``
+          :
+          ``
+      ).join("\n\n")}
+    `
+    const result = await model.generateContentStream(prompt);
+    let markdownContent = "";
+    for await (const content of result.stream) {
+      const chunk = content.text();
+      if (chunk.includes("No changes in README.md file")) {
+        await db.commit.update({
+          where: {
+            id: commitId
+          },
+          data: {
+            status: CommitStatus.NO_CHANGES
+          }
+        });
+        await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.NO_CHANGES });
+        return NextResponse.json({ message: "No changes in README.md file" });
+      }
+      if (markdownContent.length == 0) {
+        await db.commit.update({
+          where: {
+            id: commitId
+          },
+          data: {
+            status: CommitStatus.GENERATING
+          }
+        });
+        await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.GENERATING });
+      }
+      markdownContent += chunk;
+      await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent });
+    }
+    markdownContent = (await result.response).text();
+    await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent, done: true });
+    await db.commit.update({
+      where: {
+        id: commitId
+      },
+      data: {
+        markdown: markdownContent,
+        status: CommitStatus.UPDATED
+      }
+    });
+    await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.UPDATED });
+    return NextResponse.json({ message: "README.md updated" });
+  } catch (error) {
+    if (commitId) {
+      await db.commit.update({
+        where: {
+          id: commitId
+        },
+        data: {
+          status: CommitStatus.FAILED
+        }
+      });
+      await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.FAILED });
+    }
+    if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json({ message: "An error occurred" }, { status: 500 });
+  }
+}

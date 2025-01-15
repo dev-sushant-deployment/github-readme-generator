@@ -1,6 +1,6 @@
 import { GenerateReadme } from "@/components/client/GenerateReadme";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8">
       <div className="flex flex-col items-center justify-center gap-1 mt-4">
@@ -15,4 +15,4 @@ const Home = () => {
   );
 }
 
-export default Home;
+export default HomePage;

@@ -268,3 +268,17 @@ export const demoCommits : {
     markdown: "Fixed identified security vulnerabilities"
   }
 ]
+
+export const demoCommit = {
+  id: "1",
+  message: "Initial commit",
+  author: {
+    username: "john_doe"
+  },
+  repo: {
+    name: "gemini-code-parser"
+  },
+  createdAt: new Date("2022-01-01T00:00:00Z"),
+  status: "UPDATED",
+  markdown: "Initial commit with basic setup"
+}

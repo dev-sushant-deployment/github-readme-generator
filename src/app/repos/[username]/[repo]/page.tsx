@@ -5,7 +5,6 @@ import { ViewReadmeLink } from "@/components/client/ViewReadmeLink";
 import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/constants";
 import { CommitStatus } from "@prisma/client";
-// import { demoCommits, demoRepoStats } from "@/demoData";
 import { ArrowLeft, Calendar, GitBranch, Github, Star, Users } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -34,7 +33,6 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
     commits_count,
     error
   } = await getRepoStats(username, repo);
-  // const { stargazers_count, forks_count, collaborators_count, updatedAt, commits_count, error } = demoRepoStats;
   if (error) throw new Error(error);
   if (commits_count === undefined || !stargazers_count === undefined || !forks_count === undefined || !collaborators_count === undefined || !updatedAt) {
     throw new Error("Repository not found");
@@ -44,7 +42,6 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
   else if (page_no < 1) redirect(`/repos/${username}/${repo}?page_no=1`);
   if (error) throw new Error(error);
   const { commits, error : commitError } = await getCommits(username, repo, page_no);
-  // const commits = demoCommits.slice((page_no - 1) * PER_PAGE, page_no * PER_PAGE);
   if (commitError) throw new Error(commitError);
   if (!commits) throw new Error("Failed to fetch commits");
   return (
@@ -115,11 +112,8 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
         </div>}
       </div>
       <div className={`w-full flex flex-col gap-3 p-5 ${commits.length === 0 ? "" : "rounded-lg border-2 border-gray-100"}`}>
-        {process.env.NODE_ENV === "production" && <p className="text-gray-500 text-3xl text-center">
-            Repository Tracking Feature will be available soon. Stay Tuned!
-          </p>}
-        {process.env.NODE_ENV === "development" && commits.length === 0 && <p className="text-gray-500 text-3xl text-center">Repository will be tracked from Now</p>}
-        {process.env.NODE_ENV === "development" && commits.map((commit : {
+        {commits.length === 0 && <p className="text-gray-500 text-3xl text-center">Repository will be tracked from Now</p>}
+        {commits.map((commit : {
           id: string;
           status: string;
           message: string;
@@ -136,7 +130,12 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
                 <span suppressHydrationWarning>{commit.createdAt.toLocaleDateString()}</span>
               </div>
             </div>
-            <ViewReadmeLink commit_id={commit.id} status={commit.status as CommitStatus} />
+            <ViewReadmeLink
+              username={username}
+              repo={repo}
+              commit_id={commit.id}
+              initialStatus={commit.status as CommitStatus}
+            />
           </div>
         ))}
       </div>

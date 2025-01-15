@@ -1,5 +1,6 @@
 "use server";
 
+import { DEV_WEBHOOK_DOMAIN, PROD_WEBHOOK_DOMAIN } from "@/constants";
 import { db } from "@/lib/db";
 import axios from "axios";
 import jwt from "jsonwebtoken";
@@ -26,6 +27,25 @@ export const addRepo = async (url: string, access_token: string) => {
       }
     });
     if (!repos.find(({ name } : { name : string } & unknown) => name.toLowerCase() === repo.toLowerCase())) return { error: "Repository not found" };
+    const webhookDomain = process.env.NODE_ENV === "development" ? DEV_WEBHOOK_DOMAIN : PROD_WEBHOOK_DOMAIN;
+    const webHookUrl = `${webhookDomain}/api/webhook/${username}/${repo}`;
+    const data = {
+      name: "web",
+      active: true,
+      events: [
+        "push"
+      ],
+      config: {
+        url: webHookUrl,
+        content_type: "json"
+      }
+    }
+    await axios.post(`https://api.github.com/repos/${username}/${repo}/hooks`, data, {
+      headers: {
+        'Authorization': `token ${pat}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const { id } = user;
     const addedRepo = await db.repo.create({
       data: {
