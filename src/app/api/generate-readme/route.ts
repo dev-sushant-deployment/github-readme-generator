@@ -46,7 +46,6 @@ export async function GET(req: NextRequest) {
         maxRedirects: 5,
         headers: {
           'Accept': 'application/vnd.github.v3+json',
-          'Authorization': `Bearer ${process.env.GITHUB_PERSONAL_ACCESS_TOKEN}`
         }
       });
       if (!zip) return customError({ message: "Failed to fetch repository", status: 500 });
@@ -90,6 +89,7 @@ export async function GET(req: NextRequest) {
       });
       return new NextResponse(stream, { headers });
     } catch (error) {
+      console.log("Error generating README.md file", error);
       return customError({ message: (error as ErrorType).message, status: (error as ErrorType).status || 500 });
     }
   } else return NextResponse.json({ error: "URL parameter is required" }, { status: 400 });
