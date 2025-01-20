@@ -49,7 +49,8 @@ export async function GET(req: NextRequest) {
         }
       });
       if (!zip) return customError({ message: "Failed to fetch repository", status: 500 });
-      const extractedDirPath = join(process.cwd(), `${owner}-${repo}`);
+      const basePath = process.env.NODE_ENV === 'production' ? '/tmp' : process.cwd();
+      const extractedDirPath = join(basePath, `${owner}-${repo}`);
       await mkdir(extractedDirPath, { recursive: true });
       const downloadedFilePath = join(extractedDirPath, `${owner}-${repo}.zip`);
       await writeFile(downloadedFilePath, Buffer.from(zip));
