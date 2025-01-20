@@ -15,7 +15,7 @@ const AddedReposPage: React.FC<RepoPageProps> = async ({ params }) => {
     if (error) throw new Error(error);
     if (!repos) throw new Error("Failed to fetch repositories. Please try again later.");
     return (
-      <div className="flex-grow flex flex-col gap-5 w-full max-w-[1400px]">
+      <div className="flex-grow flex flex-col gap-5 w-full max-w-[1400px] px-5">
         <div className="flex justify-between items-center py-3">
           <h2 className="text-4xl font-bold">Track Repositories</h2>
           <AddRepoButton />

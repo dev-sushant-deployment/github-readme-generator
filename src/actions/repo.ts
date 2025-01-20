@@ -54,7 +54,7 @@ export const addRepo = async (url: string, access_token: string, markdown? : str
           authorId: id
         }
       });
-      axios.post(`/api/initial-commit/${username}/${repo}`, { commitId });
+      axios.post(`${process.env.DOMAIN}/api/initial-commit/${username}/${repo}`, { commitId });
     }
     const webhookDomain = process.env.NODE_ENV === "development" ? DEV_WEBHOOK_DOMAIN : PROD_WEBHOOK_DOMAIN;
     const webHookUrl = `${webhookDomain}/api/webhook/${username}/${repo}`;
@@ -79,7 +79,8 @@ export const addRepo = async (url: string, access_token: string, markdown? : str
       username,
       repo: addedRepo
     };
-  } catch {
+  } catch (error) {
+    console.log("error", error);
     return { error: "Failed to add repository. Please try again later." };
   }
 }

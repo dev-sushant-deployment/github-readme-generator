@@ -2,7 +2,8 @@ import { markdownComponents } from "@/helper/react-markdown-components";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
-import { Loader } from "lucide-react";
+import { GeneratingLoader } from "../client/generatingLoader";
+import { CopyMarkdownButton } from "../client/CopyMarkdownButton";
 
 interface ReadMeViewerProps {
   markdown: string;
@@ -18,12 +19,15 @@ export const ReadMeViewer: React.FC<ReadMeViewerProps> = ({ markdown, generating
       <div className="flex justify-between items-center bg-primary px-4 py-2 text-white rounded-t-lg">
         <h3 className="text-lg font-bold flex items-center gap-2">
           <span>README.md</span>
-          {generating && <Loader size={16} className="animate-spin" />}
+          <GeneratingLoader generating={generating} />
         </h3>
-        <TabsList className="min-w-20">
-          <TabsTrigger value="preview">Preview</TabsTrigger>
-          <TabsTrigger value="raw">Raw</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center gap-2">
+          <CopyMarkdownButton markdown={markdown}  generating={generating}/>
+          <TabsList className="min-w-20">
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="raw">Raw</TabsTrigger>
+          </TabsList>
+        </div>
       </div>
       <TabsContent value="preview" className="px-4 py-2 mt-0 bg-muted">
         <ReactMarkdown

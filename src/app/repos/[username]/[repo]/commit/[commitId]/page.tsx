@@ -1,5 +1,4 @@
 import { getCommit } from "@/actions/commit";
-import { GeneratingReadme } from "@/components/client/GeneratingReadme";
 import { ReadMeViewer } from "@/components/general/ReadMeViewer";
 import { Button } from "@/components/ui/button";
 import { CommitStatus } from "@prisma/client";
@@ -21,11 +20,12 @@ const CommitReadmePage : React.FC<CommitReadmePageProps> = async ({ params }) =>
     if (error) throw new Error(error);
     if (!commit) throw new Error("Commit not found");
     if (commit.status == CommitStatus.CHECKING) throw new Error("Commit is still being checked");
+    if (commit.status == CommitStatus.GENERATING) throw new Error("Commit is still being generated");
     if (commit.status == CommitStatus.NO_CHANGES) throw new Error("No changes to commit");
     if (commit.status == CommitStatus.FAILED) throw new Error("Failed to fetch commit");
     return (
       <div className="flex-grow flex flex-col gap-5 w-full max-w-[1450px] justify-start items-center p-5">
-        <div className="flex flex-row justify-between items-center w-full p-3">
+        <div className="flex flex-row justify-between items-center w-full p-3 border-b-2 border-gray-200">
           <Link href={`/repos/${commit.author.username}/${commit.repo.name}`}>
             <Button
               variant="ghost"
@@ -41,7 +41,6 @@ const CommitReadmePage : React.FC<CommitReadmePageProps> = async ({ params }) =>
           </div>
         </div>
         {commit.status == CommitStatus.UPDATED && <ReadMeViewer markdown={commit.markdown || ""} generating={false}/>}
-        {commit.status == CommitStatus.GENERATING && <GeneratingReadme commit_id={commitId}/>}
       </div>
     )
   }

@@ -26,6 +26,7 @@ export const validatePAT = async (access_token: string) => {
 }
 
 export const connectGithub = async (username: string, pat: string, email: string) => {
+  console.log("connectGithub", username, pat, email);
   username = username.trim();
   pat = pat.trim();
   email = email.trim();
@@ -47,7 +48,8 @@ export const connectGithub = async (username: string, pat: string, email: string
     return {
       access_token
     };
-  } catch {
+  } catch (error) {
+    console.log("error", error);
     return {
       access_token: null,
       error: "Failed to connect to Github. Please try again later."

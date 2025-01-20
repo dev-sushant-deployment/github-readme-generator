@@ -1,18 +1,12 @@
-"use client";
-
 import { CommitStatus } from "@prisma/client";
 import { Loader } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { useEffect, useState } from "react";
-import { puller } from "@/helper/Pusher/puller";
-import { COMMIT_EVENT } from "@/constants";
 
 interface CommitStatusBadgeProps {
-  commit_id: string;
   status: CommitStatus;
 }
 
-export const CommitStatusBadge: React.FC<CommitStatusBadgeProps> = ({ commit_id , status }) => {
+export const CommitStatusBadge: React.FC<CommitStatusBadgeProps> = ({ status }) => {
   const getDisplay = (tempStatus: CommitStatus) => {
     let element = null;
     let variant: "secondary" | "default" | "outline" | "destructive" | null | undefined;
@@ -47,25 +41,7 @@ export const CommitStatusBadge: React.FC<CommitStatusBadgeProps> = ({ commit_id 
     return { element, variant, text };
   }
 
-  const { element : initialElement, variant : initialVariant, text : initialText } = getDisplay(status);
-
-  const [element, setElement] = useState<React.ReactNode | null>(initialElement);
-  const [variant, setVariant] = useState<"secondary" | "default" | "outline" | "destructive" | null | undefined>(initialVariant);
-  const [text, setText] = useState<string>(initialText);
-
-  useEffect(() => {
-    const channel = puller.subscribe(`commit-${commit_id}`);
-    channel.bind(COMMIT_EVENT, ({ status } : { status : CommitStatus }) => {
-      const { element, variant, text } = getDisplay(status);
-      setElement(element);
-      setVariant(variant);
-      setText(text);
-    });
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-    }
-  }, [commit_id]);
+  const { element, variant, text } = getDisplay(status);
 
   return (
     <Badge variant={variant} className="flex gap-2 items-center rounded-full">

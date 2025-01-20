@@ -1,6 +1,4 @@
-import { COMMIT_EVENT, MARKDOWN_EVENT } from "@/constants";
 import { model } from "@/helper/gemini-ai";
-import { pusher } from "@/helper/Pusher/pusher";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
 import axios from "axios";
@@ -58,16 +56,12 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
     await mkdir(extractedDirPath, { recursive: true });
     const downloadedFilePath = join(extractedDirPath, `${owner}-${repo}.zip`);
     await writeFile(downloadedFilePath, Buffer.from(zip));
-    console.log("Extracting to:", extractedDirPath); // Log the extraction path
-    console.log("Zip file path:", downloadedFilePath)
     await Open.file(downloadedFilePath).then(directory => {
       return directory.extract({ path: extractedDirPath });
     });
-    console.log("reading your github repo.....");
     const files = extractFiles(extractedDirPath);
     await unlink(downloadedFilePath);
     await rm(extractedDirPath, { recursive: true });
-    console.log("generating prompt.....");
     const prompt = `
     # ${repo}\n\n${files.map(({ name, content }) => `## ${name}\n\n\\n${content}\n\``).join("\n\n")}
 
@@ -79,7 +73,6 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
 
     Your response should only contain the content of the README.md file.
     `;
-    console.log("generating README.md file.....");
     const result = await model.generateContentStream(prompt);
     let markdownContent = "";
     for await (const content of result.stream) {
@@ -93,13 +86,9 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
             status: CommitStatus.GENERATING
           }
         });
-        await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.GENERATING });
       }
       markdownContent += chunk;
-      await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent });
     }
-    markdownContent = (await result.response).text();
-    await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent, done: true });
     await db.commit.update({
       where: {
         id: commitId
@@ -109,7 +98,7 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
         status: CommitStatus.UPDATED
       }
     });
-    await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.UPDATED });
+    return NextResponse.json({ message: "README.md file generated" });
   } catch (error) {
     if (error instanceof Error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ error: "Failed to commit. Please try again later." }, { status: 500 });

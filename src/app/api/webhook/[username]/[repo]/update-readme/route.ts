@@ -1,6 +1,4 @@
-import { COMMIT_EVENT, MARKDOWN_EVENT } from "@/constants";
 import { model } from "@/helper/gemini-ai";
-import { pusher } from "@/helper/Pusher/pusher";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -76,7 +74,6 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
             status: CommitStatus.NO_CHANGES
           }
         });
-        await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.NO_CHANGES });
         return NextResponse.json({ message: "No changes in README.md file" });
       }
       if (markdownContent.length == 0) {
@@ -88,13 +85,10 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
             status: CommitStatus.GENERATING
           }
         });
-        await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.GENERATING });
       }
       markdownContent += chunk;
-      await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent });
     }
     markdownContent = (await result.response).text();
-    await pusher.trigger(`commit-${commitId}`, MARKDOWN_EVENT, { markdown: markdownContent, done: true });
     await db.commit.update({
       where: {
         id: commitId
@@ -104,7 +98,6 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
         status: CommitStatus.UPDATED
       }
     });
-    await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.UPDATED });
     return NextResponse.json({ message: "README.md updated" });
   } catch (error) {
     if (commitId) {
@@ -116,7 +109,6 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
           status: CommitStatus.FAILED
         }
       });
-      await pusher.trigger(`commit-${commitId}`, COMMIT_EVENT, { status: CommitStatus.FAILED });
     }
     if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
     return NextResponse.json({ message: "An error occurred" }, { status: 500 });

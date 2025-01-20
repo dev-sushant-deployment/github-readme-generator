@@ -17,7 +17,7 @@ export const Repos: React.FC<AddRepoButtonProps> = ({ username, initialRepos }) 
 
   useEffect(() => {
     eventEmitter.on("repoAdded", (repo: Repo) => {
-      setRepos(prev => [...prev, repo]);
+      setRepos(prev => [...(new Set([...prev, repo]))]);
     });
   }, []);
 
