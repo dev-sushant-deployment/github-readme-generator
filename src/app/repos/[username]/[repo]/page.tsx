@@ -122,7 +122,7 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
           <div key={commit.id} className={`w-full p-3 flex justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
             <div className="space-y-2">
               <div className="flex gap-3 items-center">
-                <CommitStatusBadge commit_id={commit.id} status={commit.status as CommitStatus} />
+                <CommitStatusBadge status={commit.status as CommitStatus} />
                 <p className="text-lg font-bold">{commit.message}</p>
               </div>
               <div className="flex gap-3 items-center text-sm text-gray-500">
@@ -134,7 +134,7 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
               username={username}
               repo={repo}
               commit_id={commit.id}
-              initialStatus={commit.status as CommitStatus}
+              status={commit.status as CommitStatus}
             />
           </div>
         ))}
