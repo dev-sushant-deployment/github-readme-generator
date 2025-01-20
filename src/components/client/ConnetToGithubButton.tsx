@@ -66,6 +66,7 @@ export const ConnectToGithubButton = () => {
       toast.success("Connected to Github successfully", { id: toastId });
     } catch (error) {
       setIsConnected(DISCONNECTED);
+      console.log("Error connecting to Github", error);
       customError(error, toastId);
     }
   }
