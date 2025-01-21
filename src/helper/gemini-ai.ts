@@ -6,8 +6,6 @@ if (!apiKey) {
   throw new Error("GOOGLE_GEN_AI_API_KEY is not defined")
 }
 
-console.log("API KEY", apiKey)
-
 const genAi = new GoogleGenerativeAI(apiKey)
 
 export const model = genAi.getGenerativeModel({ model:  GEMINI_AI_MODEL })

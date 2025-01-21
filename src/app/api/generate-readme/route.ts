@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     try {
       if (!url.match(/^https:\/\/github.com\/[^/]+\/[^/]+\/?$/)) return customError({ message: "Invalid URL", status: 400 });
       const [,,,owner , repo] = url.split('/');
-      console.log("fetching your github repo.....");
+      // console.log("fetching your github repo.....");
       const { data : zip } = await axios.get(`https://api.github.com/repos/${owner}/${repo}/zipball`, {
         responseType: 'arraybuffer',
         maxRedirects: 5,
@@ -54,16 +54,16 @@ export async function GET(req: NextRequest) {
       await mkdir(extractedDirPath, { recursive: true });
       const downloadedFilePath = join(extractedDirPath, `${owner}-${repo}.zip`);
       await writeFile(downloadedFilePath, Buffer.from(zip));
-      console.log("Extracting to:", extractedDirPath); // Log the extraction path
-      console.log("Zip file path:", downloadedFilePath)
+      // console.log("Extracting to:", extractedDirPath); // Log the extraction path
+      // console.log("Zip file path:", downloadedFilePath)
       await Open.file(downloadedFilePath).then(directory => {
         return directory.extract({ path: extractedDirPath });
       });
-      console.log("reading your github repo.....");
+      // console.log("reading your github repo.....");
       const files = extractFiles(extractedDirPath);
       await unlink(downloadedFilePath);
       await rm(extractedDirPath, { recursive: true });
-      console.log("generating prompt.....");
+      // console.log("generating prompt.....");
       const prompt = `
       # ${repo}\n\n${files.map(({ name, content }) => `## ${name}\n\n\\n${content}\n\``).join("\n\n")}
 
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
 
       Your response should only contain the content of the README.md file.
       `;
-      console.log("generating README.md file.....");
+      // console.log("generating README.md file.....");
       const result = await model.generateContentStream(prompt);
       const stream = new ReadableStream({
         async start(controller) {
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
       });
       return new NextResponse(stream, { headers });
     } catch (error) {
-      console.log("Error generating README.md file", error);
+      // console.log("Error generating README.md file", error);
       return customError({ message: (error as ErrorType).message, status: (error as ErrorType).status || 500 });
     }
   } else return NextResponse.json({ error: "URL parameter is required" }, { status: 400 });
