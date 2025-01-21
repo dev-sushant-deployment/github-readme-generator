@@ -45,8 +45,8 @@ export const Repos: React.FC<AddRepoButtonProps> = ({ username, initialRepos }) 
             </div>
             <Link href={`/repos/${username}/${repo.name}/readme`}>
               <Button variant="ghost" className="text-sm text-gray-500 flex items-center justify-center">
-                <Eye className="w-4 h-4 mr-1"/>
-                <span>View</span>
+                {/* <Eye className="w-4 h-4 mr-1"/>
+                <span>View</span> */}
               </Button>
             </Link>
           </div>
