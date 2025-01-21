@@ -11,7 +11,7 @@ interface LatestReadmePageProps {
 const LatestreadmePage : React.FC<LatestReadmePageProps> = async ({ params }) => {
   const { username, repo } = await params;
   try {
-    const {commitId, error } = await getLatestCommit(username);
+    const {commitId, error } = await getLatestCommit(username, repo);
     if (error) throw new Error(error);
     if (!commitId) throw new Error("Commit not found");
     redirect(`/repos/${username}/${repo}/commit/${commitId}`);
