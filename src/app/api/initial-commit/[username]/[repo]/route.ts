@@ -1,4 +1,4 @@
-import { model } from "@/helper/gemini-ai";
+import { fileSelectionModel, model } from "@/helper/gemini-ai";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
 import axios from "axios";
@@ -61,10 +61,33 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
       return directory.extract({ path: extractedDirPath });
     });
     const files = extractFiles(extractedDirPath);
+    const fileSelectionPrompt = `
+    I will provide you with the list of names of files in github repository.
+    You need to select the files which are essential for generating the README.md file.
+    Select only those files which are necessary for generating the README.md file.
+    Do not select files which are not necessary for generating the README.md file.
+    Select the files which have code in them.
+    Skip .md, .json, config files etc.
+    Also skip conventional files like LICENSE, README.md, CONTRIBUTING.md etc.
+    Also skip files which are for conventional library files like package.json, requirements.txt etc.
+
+    Only and only select those files which are not pre-generated.
+    Select the files which you think the user has written code in them.
+
+    Only select maximum 15 most important files for general overview of project.
+
+    Response shoud be a string with names of selected files separated by just by a /.
+
+    List of files:
+    ${files.map(({ name }) => name).join("\n")}
+    `;
+    const fileSelectionResponse = await fileSelectionModel.generateContent(fileSelectionPrompt);
+    const fileSelectionText = fileSelectionResponse.response.text();
+    const selectedFiles = fileSelectionText.split("/").map(file => file.trim());
     await unlink(downloadedFilePath);
     await rm(extractedDirPath, { recursive: true });
     const prompt = `
-    # ${repo}\n\n${files.map(({ name, content }) => `## ${name}\n\n\\n${content}\n\``).join("\n\n")}
+    # ${repo}\n\n${files.map(({ name, content }) => selectedFiles.includes(name) ? `## ${name}\n\n\\n${content}\n\`` : ``).join("\n\n")}
 
     Above are the contents of the repository. Please generate a README.md file for this repository.
     Do not include the contents of the files in the README.md file. The README.md file should contain a brief description of the repository and its contents.

@@ -7,7 +7,7 @@ const HomePage = () => {
         <h1 className="text-4xl font-bold">README Generator</h1>
         <h3 className="text-lg text-gray-400">Generate and track README files for your GitHub repositories</h3>
         <p className="text-gray-500 text-xs">
-          *Note: Big repositories may take a while to generate README files.
+          *Note: Big repositories may not cover complete context.
         </p>
       </div>
       <GenerateReadme />
