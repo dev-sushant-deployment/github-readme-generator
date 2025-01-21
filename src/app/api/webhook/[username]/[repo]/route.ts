@@ -15,7 +15,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
   const rawBody = await req.text();
   if (!rawBody) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
   try {
-    const { ref, head_commit } = await req.json();
+    const { ref, head_commit } = JSON.parse(rawBody);
     if (!ref || !head_commit) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
     const { id : sha } = head_commit;
     if (ref !== "refs/heads/main") return NextResponse.json({ message: "Not a main branch push" });
@@ -55,7 +55,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       })
       commitId = commit.id;
       const readmeFile = files.find(({ filename, status } : { filename : string, status : string }) => filename === "README.md" && status !== "removed");
-      if (!readmeFile) axios.post(`/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
+      if (!readmeFile) axios.post(`${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
       else {
         const { data : { content } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
           headers: {
@@ -87,6 +87,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
   } catch (error) {
+    console.log("error", error);
     if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }

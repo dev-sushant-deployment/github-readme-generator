@@ -88,7 +88,6 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       }
       markdownContent += chunk;
     }
-    markdownContent = (await result.response).text();
     await db.commit.update({
       where: {
         id: commitId
