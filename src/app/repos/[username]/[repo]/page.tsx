@@ -119,7 +119,7 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
           message: string;
           createdAt: Date;
         }, index) => (
-          <div key={commit.id} className={`w-full p-3 flex flex-col sm:flex-row gap-3 sm:gap-0justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
+          <div key={commit.id} className={`w-full p-3 flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
             <div className="space-y-2 w-full sm:w-auto">
               <div className="flex sm:gap-3 items-center flex-col gap-2 sm:flex-row">
                 <CommitStatusBadge status={commit.status as CommitStatus} />
