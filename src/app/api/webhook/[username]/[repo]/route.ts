@@ -192,6 +192,7 @@ export async function POST(req: NextRequest, { params }: WebhookRouteParams) {
 
         // Don't await the background process
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         backgroundProcess;
       } else {
         const { data: { content } } = await axios.get(
