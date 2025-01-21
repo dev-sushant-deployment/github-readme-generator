@@ -172,11 +172,14 @@ export const getRepoStats = async (username: string, repo: string) => {
   }
 }
 
-export const getLatestCommit = async (username: string) => {
+export const getLatestCommit = async (username: string, repo: string) => {
   try {
-    const user = await db.user.findFirst({
+    const repoData = await db.repo.findFirst({
       where: {
-        username
+        name: repo,
+        owner:{
+          username
+        }
       },
       include: {
         commits: {
@@ -190,8 +193,8 @@ export const getLatestCommit = async (username: string) => {
         }
       }
     });
-    if (!user) return { error: "User not found" };
-    const { commits } = user;
+    if (!repoData) return { error: "User not found" };
+    const { commits } = repoData;
     if (commits.length === 0) return { error: "No commits found" };
     const { id } = commits[0];
     return {
