@@ -13,6 +13,7 @@ interface WebhookRouteParams {
 export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
   const { username, repo } = await params;
   const { files, commitId } = await req.json();
+  console.log("files", files);
   try {
     const user = await db.user.findFirst({
       where: {

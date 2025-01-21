@@ -55,7 +55,10 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       })
       commitId = commit.id;
       const readmeFile = files.find(({ filename, status } : { filename : string, status : string }) => filename === "README.md" && status !== "removed");
-      if (!readmeFile) axios.post(`${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
+      if (!readmeFile) {
+        console.log("No README.md file found");
+        axios.post(`${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
+      }
       else {
         const { data : { content } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
           headers: {
