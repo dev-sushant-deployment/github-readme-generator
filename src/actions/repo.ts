@@ -87,7 +87,7 @@ export const addRepo = async (url: string, access_token: string, markdown? : str
       repo: addedRepo
     };
   } catch (error) {
-    // console.log("error", error);
+    console.log("error", error);
     return { error: "Failed to add repository. Please try again later." };
   }
 }

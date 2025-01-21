@@ -56,7 +56,7 @@ export const connectGithub = async (username: string, pat: string, email: string
       access_token
     };
   } catch (error) {
-    // console.log("error", error);
+    console.log("error", error);
     return {
       access_token: null,
       error: "Failed to connect to Github. Please try again later."
