@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Github Readme Generator
+
+This application automatically generates README files for your GitHub repositories.  It analyzes your repository's code and content to create a concise and informative README.md file, saving you time and effort.
+
+## Features
+
+* **Automated README Generation:** Analyzes your GitHub repository to generate a README.md file.
+* **Code Analysis:**  Intelligently selects relevant code files for context when generating the README.
+* **Markdown Support:**  Generates README files in standard markdown format.
+* **Repository Tracking:**  Connect your GitHub account to track and manage your repositories within the application.
+* **Commit History Integration:** Updates the README based on new commits and changes pushed to your repository.
+* **Webhooks:** Uses webhooks to listen for push events on your repository and automatically update the README.
+* **Error Handling and User Feedback:** Provides clear error messages and user feedback during the generation process.
 
 ## Getting Started
 
-First, run the development server:
+1. **Provide Repository URL:** Enter the URL of your GitHub repository.
+2. **Generate README:** Click the "Generate README" button. The application will analyze your repository and generate a README.md file.
+3. **Track Repository (Optional):** Connect your GitHub account to track the repository and enable automatic README updates on future commits.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technical Details
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application utilizes the following technologies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Next.js:**  For building the user interface and serverless functions.
+* **Google Gemini AI:** For code analysis and README generation.
+* **Prisma:** For database management and interacting with the database.
+* **Tailwind CSS:**  For styling the user interface.
+* **React Markdown:** For rendering markdown content.
+* **Axios:** For making HTTP requests.
+* **JWT (JSON Web Tokens):** For secure authentication and authorization.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contributing
 
-## Learn More
+Contributions are welcome!  Please feel free to submit issues and pull requests.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application is deployed on Vercel.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
