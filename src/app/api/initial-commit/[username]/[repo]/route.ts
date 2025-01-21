@@ -124,6 +124,15 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
     });
     return NextResponse.json({ message: "README.md file generated" });
   } catch (error) {
+    await db.commit.update({
+      where: {
+        id: commitId
+      },
+      data: {
+        status: CommitStatus.FAILED
+      }
+    });
+    console.log("Error generating README.md file", error);
     if (error instanceof Error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ error: "Failed to commit. Please try again later." }, { status: 500 });
   }
