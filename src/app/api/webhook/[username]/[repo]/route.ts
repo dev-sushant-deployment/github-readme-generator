@@ -219,6 +219,7 @@ export async function POST(req: NextRequest, { params }: WebhookRouteParams) {
           data: { status: CommitStatus.FAILED }
         });
       }
+      console.error('Error:', error);
       if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
