@@ -22,7 +22,7 @@ export const Repos: React.FC<AddRepoButtonProps> = ({ username, initialRepos }) 
   }, []);
 
   return (
-    <div className={`w-full grid grid-cols-4 gap-2 ${repos.length == 0 ? "flex-grow" : ""}`}>
+    <div className={`w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ${repos.length == 0 ? "flex-grow" : ""}`}>
       {repos.length == 0 && (
         <div className="col-span-4 flex justify-center items-center h-full p-4 rounded-lg border-2 border-gray-100">
           <p className="text-6xl text-gray-500">No repositories Added.</p>

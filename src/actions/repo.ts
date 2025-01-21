@@ -29,6 +29,13 @@ export const addRepo = async (url: string, access_token: string, markdown? : str
     });
     if (!repos.find(({ name } : { name : string } & unknown) => name.toLowerCase() === repo.toLowerCase())) return { error: "Repository not found" };
     const { id } = user;
+    const alreadyExists = await db.repo.findFirst({
+      where: {
+        ownerId: id,
+        name: repo
+      }
+    });
+    if (alreadyExists) return { error: "Repository already added" };
     const addedRepo = await db.repo.create({
       data: {
         name: repo,
@@ -162,5 +169,35 @@ export const getRepoStats = async (username: string, repo: string) => {
     };
   } catch {
     return { error: "Failed to fetch repository stats. Please try again later." };
+  }
+}
+
+export const getLatestCommit = async (username: string) => {
+  try {
+    const user = await db.user.findFirst({
+      where: {
+        username
+      },
+      include: {
+        commits: {
+          select: {
+            id: true,
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 1
+        }
+      }
+    });
+    if (!user) return { error: "User not found" };
+    const { commits } = user;
+    if (commits.length === 0) return { error: "No commits found" };
+    const { id } = commits[0];
+    return {
+      commitId: id
+    };
+  } catch {
+    return { error: "Failed to fetch latest commit. Please try again later." };
   }
 }

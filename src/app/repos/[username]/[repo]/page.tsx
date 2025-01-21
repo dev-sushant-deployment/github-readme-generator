@@ -53,7 +53,7 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
             className="flex justify-between gap-3 items-center"
           >
             <ArrowLeft size={24} />
-            <span>Back to Repositories</span>
+            <span>Back</span>
           </Button>
         </Link>
         <Link
@@ -69,12 +69,12 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
           </Button>
         </Link>
       </div>
-      <div className="flex justify-between items-center w-full py-7 px-10 rounded-lg border-2 border-gray-100">
+      <div className="flex justify-between items-center w-full py-7 px-5 sm:px-10 rounded-lg border-2 border-gray-100">
         <div className="flex flex-col justify-center items-start gap-2">
           <h2 className="text-2xl font-bold">{repo}</h2>
           <p className="text-sm text-gray-500" suppressHydrationWarning>Last updated {updatedAt?.toLocaleDateString()}</p>
         </div>
-        <div className="flex justify-center items-center gap-7 text-gray-500 text-sm">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-7 text-gray-500 text-sm">
           <div className="flex justify-center items-center gap-3">
             <Star size={18} />
             <span>{stargazers_count}</span>
@@ -119,9 +119,9 @@ const RepoPage : React.FC<RepoPageProps> = async ({ params, searchParams }) => {
           message: string;
           createdAt: Date;
         }, index) => (
-          <div key={commit.id} className={`w-full p-3 flex justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
-            <div className="space-y-2">
-              <div className="flex gap-3 items-center">
+          <div key={commit.id} className={`w-full p-3 flex flex-col sm:flex-row gap-3 sm:gap-0justify-between items-center ${index === 0 ? "" : "border-t-2 border-gray-100"}`}>
+            <div className="space-y-2 w-full sm:w-auto">
+              <div className="flex sm:gap-3 items-center flex-col gap-2 sm:flex-row">
                 <CommitStatusBadge status={commit.status as CommitStatus} />
                 <p className="text-lg font-bold">{commit.message}</p>
               </div>

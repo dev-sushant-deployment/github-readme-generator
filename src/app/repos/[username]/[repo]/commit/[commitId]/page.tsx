@@ -25,7 +25,7 @@ const CommitReadmePage : React.FC<CommitReadmePageProps> = async ({ params }) =>
     if (commit.status == CommitStatus.FAILED) throw new Error("Failed to fetch commit");
     return (
       <div className="flex-grow flex flex-col gap-5 w-full max-w-[1450px] justify-start items-center p-5">
-        <div className="flex flex-row justify-between items-center w-full p-3 border-b-2 border-gray-200">
+        <div className="flex flex-row justify-between items-center w-full p-1 sm:p-3 border-b-2 border-gray-200">
           <Link href={`/repos/${commit.author.username}/${commit.repo.name}`}>
             <Button
               variant="ghost"

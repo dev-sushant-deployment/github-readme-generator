@@ -8,5 +8,5 @@ interface GeneratingLoaderProps {
 
 export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({ generating }) => {
   if (!generating) return null;
-  return <Loader size={16} className="animate-spin" />
+  return <Loader size={16} className="animate-spin hidden sm:visible" />
 }

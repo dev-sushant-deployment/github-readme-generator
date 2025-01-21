@@ -102,11 +102,11 @@ export const GenerateReadme = () => {
 
   return (
     <>
-      <div className="flex flex-row gap-3 items-center justify-center">
+      <div className="flex flex-col md:flex-row gap-3 items-center justify-center w-full max-w-[900px] ">
         <Input
           placeholder="Enter Github Repository URL (e.g., https://github.com/owner/repo)"
           type="url"
-          className="w-[600px] py-5 rounded-lg border border-gray-200"
+          className="w-full max-w-[600px] py-5 rounded-lg border border-gray-200"
           value={url}
           readOnly={generating}
           onChange={(e) => setUrl(e.target.value)}

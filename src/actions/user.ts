@@ -38,13 +38,20 @@ export const connectGithub = async (username: string, pat: string, email: string
     error: "Invalid Username or Personal Access Token"
   };
   try {
-    await db.user.create({
-      data: {
-        username,
-        pat,
-        email
+    const alreadyExists = await db.user.findFirst({
+      where: {
+        username
       }
     });
+    if (!alreadyExists) {
+      await db.user.create({
+        data: {
+          username,
+          pat,
+          email
+        }
+      });
+    }
     return {
       access_token
     };
