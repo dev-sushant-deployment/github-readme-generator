@@ -1,113 +1,7 @@
-// import { db } from "@/lib/db";
-// import { CommitStatus } from "@prisma/client";
-// import axios from "axios";
-// import { NextRequest, NextResponse } from "next/server";
-
-// interface WebhookRouteParams {
-//   params: Promise <{
-//     username: string;
-//     repo: string;
-//   }>
-// }
-
-// export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
-//   const { username, repo } = await params;
-//   const rawBody = await req.text();
-//   if (!rawBody) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
-//   try {
-//     const { ref, head_commit } = JSON.parse(rawBody);
-//     if (!ref || !head_commit) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
-//     const { id : sha } = head_commit;
-//     if (ref !== "refs/heads/main") return NextResponse.json({ message: "Not a main branch push" });
-//     let commitId : string | undefined;
-//     try {
-//       const user = await db.user.findFirst({
-//         where: {
-//           username
-//         },
-//         select: {
-//           id: true,
-//           pat: true
-//         }
-//       });
-//       if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
-//       const { id, pat } = user;
-//       const { data : { files, commit : { message } } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/commits/${sha}`, {
-//         headers: {
-//           'Authorization': `token ${pat}`
-//         }
-//       });
-//       const repoData = await db.repo.findFirst({
-//         where: {
-//           ownerId: id,
-//           name: repo
-//         }
-//       });
-//       if (!repoData) return NextResponse.json({ message: "Repository not found" }, { status: 404 });
-//       const { id : repoId } = repoData;
-//       const commit = await db.commit.create({
-//         data: {
-//           message,
-//           status: CommitStatus.CHECKING,
-//           authorId: id,
-//           repoId
-//         }
-//       })
-//       commitId = commit.id;
-//       const readmeFile = files.find(({ filename, status } : { filename : string, status : string }) => filename === "README.md" && status !== "removed");
-//       if (!readmeFile) {
-//         console.log("No README.md file found");
-//         axios.post(`${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
-//       }
-//       else {
-//         const { data : { content } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
-//           headers: {
-//             'Authorization': `token ${pat}`
-//           }
-//         });
-//         const readmeContent = Buffer.from(content, 'base64').toString();
-//         await db.commit.update({
-//           where: {
-//             id: commitId
-//           },
-//           data: {
-//             markdown: readmeContent,
-//             status: CommitStatus.UPDATED
-//           }
-//         });
-//       }
-//       return NextResponse.json({ message: "Commit received" });
-//     } catch (error) {
-//       if (commitId) await db.commit.update({
-//         where: {
-//           id: commitId
-//         },
-//         data: {
-//           status: CommitStatus.FAILED
-//         }
-//       });
-//       if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
-//       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
-//     }
-//   } catch (error) {
-//     console.log("error", error);
-//     if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
-//     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
-//   }
-// }
-
-// app/api/webhook/[username]/[repo]/route.ts
-
-import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
 import axios from "axios";
-
-// Specify Edge Runtime
-export const runtime = 'edge';
-
-// Configure longer timeout if needed
-export const maxDuration = 60; // 60 seconds, adjust as needed
+import { NextRequest, NextResponse } from "next/server";
 
 interface WebhookRouteParams {
   params: Promise <{
@@ -116,44 +10,41 @@ interface WebhookRouteParams {
   }>
 }
 
-export async function POST(req: NextRequest, { params }: WebhookRouteParams) {
+export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
   const { username, repo } = await params;
   const rawBody = await req.text();
-  
   if (!rawBody) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
-  
   try {
     const { ref, head_commit } = JSON.parse(rawBody);
     if (!ref || !head_commit) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
-    const { id: sha } = head_commit;
-    
-    if (ref !== "refs/heads/main") {
-      return NextResponse.json({ message: "Not a main branch push" });
-    }
-    
-    let commitId: string | undefined;
-    
+    const { id : sha } = head_commit;
+    if (ref !== "refs/heads/main") return NextResponse.json({ message: "Not a main branch push" });
+    let commitId : string | undefined;
     try {
       const user = await db.user.findFirst({
-        where: { username },
-        select: { id: true, pat: true }
+        where: {
+          username
+        },
+        select: {
+          id: true,
+          pat: true
+        }
       });
-      
       if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
       const { id, pat } = user;
-      
-      const { data: { files, commit: { message } } } = await axios.get(
-        `https://api.github.com/repos/${username}/${repo}/commits/${sha}`,
-        { headers: { 'Authorization': `token ${pat}` } }
-      );
-      
-      const repoData = await db.repo.findFirst({
-        where: { ownerId: id, name: repo }
+      const { data : { files, commit : { message } } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/commits/${sha}`, {
+        headers: {
+          'Authorization': `token ${pat}`
+        }
       });
-      
+      const repoData = await db.repo.findFirst({
+        where: {
+          ownerId: id,
+          name: repo
+        }
+      });
       if (!repoData) return NextResponse.json({ message: "Repository not found" }, { status: 404 });
-      const { id: repoId } = repoData;
-      
+      const { id : repoId } = repoData;
       const commit = await db.commit.create({
         data: {
           message,
@@ -161,70 +52,45 @@ export async function POST(req: NextRequest, { params }: WebhookRouteParams) {
           authorId: id,
           repoId
         }
-      });
-      
+      })
       commitId = commit.id;
-      
-      const readmeFile = files.find(({ filename, status }: { filename: string, status: string }) => 
-        filename === "README.md" && status !== "removed"
-      );
-      
+      const readmeFile = files.find(({ filename, status } : { filename : string, status : string }) => filename === "README.md" && status !== "removed");
       if (!readmeFile) {
-        // Using native fetch instead of axios for better edge compatibility
-        const backgroundProcess = fetch(
-          `${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`,
-          {
-            method: 'POST',
-            body: JSON.stringify({ files, commitId }),
-            headers: {
-              'Authorization': `token ${pat}`,
-              'Content-Type': 'application/json'
-            }
+        console.log("No README.md file found");
+        await axios.post(`${process.env.DOMAIN}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
+      }
+      else {
+        const { data : { content } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
+          headers: {
+            'Authorization': `token ${pat}`
           }
-        ).catch(error => {
-          console.error('Background task error:', error);
-          // Update commit status to failed if background task fails
-          return db.commit.update({
-            where: { id: commitId },
-            data: { status: CommitStatus.FAILED }
-          });
         });
-
-        // Don't await the background process
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        backgroundProcess;
-      } else {
-        const { data: { content } } = await axios.get(
-          `https://api.github.com/repos/${username}/${repo}/contents/README.md`,
-          { headers: { 'Authorization': `token ${pat}` } }
-        );
-        
         const readmeContent = Buffer.from(content, 'base64').toString();
         await db.commit.update({
-          where: { id: commitId },
+          where: {
+            id: commitId
+          },
           data: {
             markdown: readmeContent,
             status: CommitStatus.UPDATED
           }
         });
       }
-      
       return NextResponse.json({ message: "Commit received" });
-      
     } catch (error) {
-      if (commitId) {
-        await db.commit.update({
-          where: { id: commitId },
-          data: { status: CommitStatus.FAILED }
-        });
-      }
-      console.error('Error:', error);
+      if (commitId) await db.commit.update({
+        where: {
+          id: commitId
+        },
+        data: {
+          status: CommitStatus.FAILED
+        }
+      });
       if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
   } catch (error) {
-    console.error("error", error);
+    console.log("error", error);
     if (error instanceof Error) return NextResponse.json({ message: error.message }, { status: 500 });
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
