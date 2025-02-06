@@ -96,6 +96,15 @@ export async function GET(req: NextRequest) {
       README.md file should not be too short or too long. It should be concise and informative.
       It should contain all the necessary information about the repository(project).
 
+      The readme file shold follow the below instruction:
+      - It should to contain emojis where necessary.
+      - It should have a table of contents.
+      - It should have a brief description of the project.
+      - System workflow should be explained in structured manner.
+      - Where necessary, code snippets should be included.
+      - Also include the installation steps.
+      - Also include logos, badges, and other necessary images, publicily accessible, where necessary.
+
       Your response should only contain the content of the README.md file.
       `;
       // console.log("prompt", prompt);

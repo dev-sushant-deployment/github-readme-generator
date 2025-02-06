@@ -107,6 +107,9 @@ export const getRepos = async (username: string) => {
     const repos = await db.repo.findMany({
       where: {
         ownerId: id
+      },
+      orderBy: {
+        updatedAt: "desc"
       }
     });
     return {

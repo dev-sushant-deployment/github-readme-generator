@@ -11,13 +11,6 @@ import { addRepo } from "@/actions/repo";
 import { customError } from "@/lib/error";
 import { useRouter } from "next/navigation";
 
-interface ErrorEvent extends Event {
-  data: {
-    message?: string;
-    status: number;
-  }
-}
-
 export const GenerateReadme = () => {
   const router = useRouter();
   const [url, setUrl] = useState("");
@@ -38,11 +31,10 @@ export const GenerateReadme = () => {
           eventSource.close();
         }
       }
-      eventSource.onerror = (event) => {
+      eventSource.onerror = () => {
         setGenerating(false);
         eventSource.close();
-        const { message } = JSON.parse((event as ErrorEvent).data as unknown as string);
-        setError(message);
+        setError("Failed to generate README. Please try again later.");
       }
     } catch {
       setGenerating(false);

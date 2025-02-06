@@ -7,9 +7,9 @@ import jwt from "jsonwebtoken";
 export const validatePAT = async (access_token: string) => {
   if (!access_token) return { valid : false };
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is not defined");
-  const { username, pat } = jwt.verify(access_token, process.env.JWT_SECRET) as { username: string, pat: string };
-  if (!username || !pat) return { valid : false };
   try {
+    const { username, pat } = jwt.verify(access_token, process.env.JWT_SECRET) as { username: string, pat: string };
+    if (!username || !pat) return { valid : false };
     const { data } = await axios.get("https://api.github.com/user", {
       headers: {
         Authorization: `token ${pat}`
