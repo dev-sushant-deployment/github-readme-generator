@@ -40,7 +40,7 @@ const CommitReadmePage : React.FC<CommitReadmePageProps> = async ({ params }) =>
             <h3 className="text-sm text-gray-500"> README at commit: {commit.message} </h3>
           </div>
         </div>
-        {commit.status == CommitStatus.UPDATED && <ReadMeViewer markdown={commit.markdown || ""} generating={false}/>}
+        {commit.status == CommitStatus.UPDATED && <ReadMeViewer commitId={commitId} markdown={commit.markdown || ""} generating={false}/>}
       </div>
     )
   }

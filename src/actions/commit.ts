@@ -1,3 +1,5 @@
+"use server";
+
 import { PER_PAGE } from "@/constants";
 import { db } from "@/lib/db";
 
@@ -65,5 +67,23 @@ export const getCommit = async (commitId: string) => {
     };
   } catch {
     return { error: "Failed to fetch commit. Please try again later." };
+  }
+}
+
+export const updateMarkdown = async (commitId: string, markdown: string) => {
+  try {
+    await db.commit.update({
+      where: {
+        id: commitId
+      },
+      data: {
+        markdown
+      }
+    });
+    return {
+      success: true
+    };
+  } catch {
+    return { error: "Failed to update commit. Please try again later." };
   }
 }

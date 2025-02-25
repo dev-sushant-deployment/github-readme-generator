@@ -17,7 +17,7 @@ export const CopyMarkdownButton: React.FC<CopyMarkdownButtonProps> = ({ markdown
       onClick={() => navigator.clipboard.writeText(markdown)}
     >
       <Copy size={16} className="mr-2" />
-      <span className="hidden sm:visible">Copy</span>
+      <span className="hidden sm:block">Copy</span>
     </Button>
   )
 }
