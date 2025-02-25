@@ -1,5 +1,5 @@
 import { getCommit } from "@/actions/commit";
-import { ReadMeViewer } from "@/components/general/ReadMeViewer";
+import { ReadMeViewer } from "@/components/client/ReadMeViewer";
 import { Button } from "@/components/ui/button";
 import { CommitStatus } from "@prisma/client";
 import { ArrowLeft } from "lucide-react";

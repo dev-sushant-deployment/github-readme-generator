@@ -4,8 +4,8 @@ import { markdownComponents } from "@/helper/react-markdown-components";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
-import { GeneratingLoader } from "../client/generatingLoader";
-import { CopyMarkdownButton } from "../client/CopyMarkdownButton";
+import { GeneratingLoader } from "./generatingLoader";
+import { CopyMarkdownButton } from "./CopyMarkdownButton";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";

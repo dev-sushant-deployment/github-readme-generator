@@ -1,6 +1,6 @@
 "use client";
 
-import { ReadMeViewer } from "@/components/general/ReadMeViewer";
+import { ReadMeViewer } from "@/components/client/ReadMeViewer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
