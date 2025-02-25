@@ -57,7 +57,7 @@ export const ReadMeViewer: React.FC<ReadMeViewerProps> = ({ commitId, markdown, 
         id: toastId.current
       });
       setOriginalMarkdown(editedMarkdown);
-    } catch (error) {
+    } catch {
       toast.error("Failed to save changes", {
         duration: 3000,
         action: undefined,
