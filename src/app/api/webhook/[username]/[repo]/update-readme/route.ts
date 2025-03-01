@@ -38,10 +38,6 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
     })
     if (latestCommit.length == 0) return NextResponse.json({ error: "No previous commit found" }, { status: 404 });
     const { markdown : readmeContent } = latestCommit[0];
-    console.log("readmeContent", readmeContent);
-    // Add the editing feature in readme
-    console.log("readmeContent", readmeContent);
-    console.log("files", files);
     const prompt = `
       I will provide you with the current README.md content.
       Also I will provide you with the files which have been changed or created, and the patch of the changes.
