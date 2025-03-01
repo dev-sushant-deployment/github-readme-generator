@@ -78,6 +78,11 @@ export const ReadMeViewer: React.FC<ReadMeViewerProps> = ({ commitId, markdown, 
   }
 
   useEffect(() => {
+    setEditedMarkdown(markdown);
+    setOriginalMarkdown(markdown);
+  }, [markdown]);
+
+  useEffect(() => {
     if (!commitId) return;
     if (editedMarkdown !== markdown) {
       if (!toastId.current) {
