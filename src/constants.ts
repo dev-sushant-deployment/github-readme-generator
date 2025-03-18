@@ -12,3 +12,5 @@ export const PROD_WEBHOOK_DOMAIN = "https://readme-generator-github.vercel.app";
 export const COMMIT_EVENT = "commit-event";
 export const MARKDOWN_EVENT = "markdown-event";
 export const INITIAL_COMMIT_MSG = "Initial Generation";
+export const basePath = process.env.NODE_ENV === 'production' ? '/tmp' : process.cwd();
+export const IMAGE_NAME_PREFIX = 'gemini-native-image-';

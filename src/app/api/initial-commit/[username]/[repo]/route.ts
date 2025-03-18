@@ -1,3 +1,5 @@
+import { generateAllImages } from "@/actions/image";
+import { basePath } from "@/constants";
 import { fileSelectionModel, model } from "@/helper/gemini-ai";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
@@ -52,7 +54,6 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
       }
     });
     if (!zip) return NextResponse.json({ error: "Failed to fetch repository" }, { status: 500 });
-    const basePath = process.env.NODE_ENV === 'production' ? '/tmp' : process.cwd();
     const extractedDirPath = join(basePath, `${owner}-${repo}`);
     await mkdir(extractedDirPath, { recursive: true });
     const downloadedFilePath = join(extractedDirPath, `${owner}-${repo}.zip`);
@@ -103,8 +104,25 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
       - Where necessary, code snippets should be included.
       - Also include the installation steps.
       - Also include logos, badges, and other necessary images, publicily accessible, where necessary.
+    
+    Follow the below instruction for images in README.md file:
+      - Image will be generated use ai model for image generation.
+      - So, you need to provide the prompt for image generation.
+      - The prompt should be detailed and clear.
+      - Try to use image where necessary.
+      - Example : '![Image Generation Prompt](1)' where 1 is the image number.
+      - All prompt should be inside the alt text of the image.
+      - Prompt should be clear, detailed and complete.
+      - Image URL section, i.e () should only contain the image number.
+      - You can also use emojis in the prompt.
+
+    - Make sure to include one cover image at the top of the README.md file for the complete project.
+    - Do not provide prompts explicityly other than inside the alt text of the image.
+    - Use images only where necessary and where it makes sense.
 
     Your response should only contain the content of the README.md file.
+    - Do not include response in triple backticks.
+    - Do not include response in code blocks.
     `;
     const result = await model.generateContentStream(prompt);
     let markdownContent = "";
@@ -131,6 +149,7 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
         status: CommitStatus.UPDATED
       }
     });
+    generateAllImages(commitId);
     return NextResponse.json({ message: "README.md file generated" });
   } catch (error) {
     await db.commit.update({

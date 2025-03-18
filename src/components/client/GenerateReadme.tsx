@@ -10,6 +10,7 @@ import { ACCESS_TOKEN } from "@/constants";
 import { addRepo } from "@/actions/repo";
 import { customError } from "@/lib/error";
 import { useRouter } from "next/navigation";
+import { getImage } from "@/actions/image";
 
 export const GenerateReadme = () => {
   const router = useRouter();
@@ -18,6 +19,30 @@ export const GenerateReadme = () => {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
   const [toastId, setToastId] = useState<string | number | null>(null);
+
+  const generateImages = async () => {
+    const imageRegex = /!\[(.*?)\]\((\d+)\)/g;
+    const images = [];
+    let match;
+
+    while ((match = imageRegex.exec(markdown)) !== null) {
+      images.push({ position: match[2], prompt: match[1] });
+    }
+    await Promise.all(
+      images.map(async (image) => {
+        const url = await getImage(image.prompt);
+        setMarkdown(prev => prev.replace(
+          `![${image.prompt}](${image.position})`,
+          `![${image.prompt}](${url})`
+        ))
+      })
+    );
+  }
+
+  useEffect(() => {
+    if (generating) return;
+    generateImages();
+  }, [generating])
 
   const generateReadme = async () => {
     setGenerating(true);

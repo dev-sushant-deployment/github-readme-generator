@@ -17,3 +17,17 @@ if (!fileSelectionApiKey) {
 
 const fileSelectionAi = new GoogleGenerativeAI(fileSelectionApiKey)
 export const fileSelectionModel = fileSelectionAi.getGenerativeModel({ model: GEMINI_AI_FILE_SELECTION_MODEL })
+
+const imageGenerationApiKey = process.env.GOOGLE_IMAGE_GENERATION_API_KEY;
+if (!imageGenerationApiKey) {
+  throw new Error("GOOGLE_IMAGE_GENERATION_API_KEY is not defined")
+}
+
+const imageGenerationAi = new GoogleGenerativeAI(imageGenerationApiKey)
+export const imageGenerationModel = imageGenerationAi.getGenerativeModel({
+  model: "gemini-2.0-flash-exp-image-generation",
+  generationConfig: {
+    // @ts-ignore
+    responseModalities: ['Text', 'Image']
+  },
+});

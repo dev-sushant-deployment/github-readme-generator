@@ -1,3 +1,4 @@
+import { generateAllImages } from "@/actions/image";
 import { model } from "@/helper/gemini-ai";
 import { db } from "@/lib/db";
 import { CommitStatus } from "@prisma/client";
@@ -46,6 +47,20 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       README.md file should be written in markdown format.
       README.md file should not be too short or too long. It should be concise and informative.
       It should contain all the necessary information about the repository(project).
+
+      Follow the below instruction for images in README.md file:
+      - Image will be generated use ai model for image generation.
+      - So, you need to provide the prompt for image generation.
+      - The prompt should be detailed and clear.
+      - Try to use image where necessary.
+      - Example : '![Image Generation Prompt](1)' where 1 is the image number.
+      - All prompt should be inside the alt text of the image.
+      - Prompt should be clear, detailed and complete.
+      - Image URL section, i.e () should only contain the image number.
+      - You can also use emojis in the prompt.
+
+      - Do not provide prompts explicitly other than inside the alt text of the image.
+      - Use images only where necessary and where it makes sense.
   
       Your response should only contain the content of the README.md file.
   
@@ -98,6 +113,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
         status: CommitStatus.UPDATED
       }
     });
+    generateAllImages(commitId);
     return NextResponse.json({ message: "README.md updated" });
   } catch (error) {
     if (commitId) {

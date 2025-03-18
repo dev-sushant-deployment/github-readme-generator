@@ -18,6 +18,7 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.6.0",
     "clsx": "^2.1.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.471.0",
@@ -30,7 +31,8 @@
     "sonner": "^2.0.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "unzipper": "^0.12.3"
+    "unzipper": "^0.12.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

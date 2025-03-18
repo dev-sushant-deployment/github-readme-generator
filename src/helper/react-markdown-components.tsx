@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { Prism as SyntaxHighlighter, SyntaxHighlighterProps } from "react-syntax-highlighter";
@@ -68,7 +69,7 @@ export const markdownComponents: { [key: string]: React.ElementType } = {
   tr: ({ children }: { children: ReactNode }) => <tr className="border-b border-gray-300">{children}</tr>,
   th: ({ children }: { children: ReactNode }) => <th className="px-4 py-2 text-left font-medium text-gray-600 border border-gray-300">{children}</th>,
   td: ({ children }: { children: ReactNode }) => <td className="px-4 py-2 text-gray-600 border border-gray-300">{children}</td>,
-  img: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} className="rounded-lg max-w-full h-auto my-4" />,
+  img: ({ src, alt }: { src: string; alt: string }) => src.startsWith('https://') ? <img src={src} alt={alt} className="rounded-lg max-w-full h-auto my-4" /> : <Skeleton className="rounded-lg my-4 w-full h-96" />,
   strong: ({ children }: { children: ReactNode }) => <strong className="font-semibold text-gray-700">{children}</strong>,
   em: ({ children }: { children: ReactNode }) => <em className="italic text-gray-600">{children}</em>,
   del: ({ children }: { children: ReactNode }) => <del className="line-through text-gray-400">{children}</del>,
