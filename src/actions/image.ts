@@ -30,17 +30,15 @@ export const generateAllImages = async (id: string) => {
       images.push({ position: match[2], prompt: match[1] });
     }
 
-    await Promise.all(
-      images.map(async (image) => {
-        const url = await getImage(image.prompt);
-        if (markdown) {
-          markdown = markdown.replace(
-            `![${image.prompt}](${image.position})`,
-            `![${image.prompt}](${url})`
-          );
-        }
-      })
-    );
+    for (const image of images) {
+      const url = await getImage(image.prompt);
+      if (markdown) {
+        markdown = markdown.replace(
+          `![${image.prompt}](${image.position})`,
+          `![${image.prompt}](${url})`
+        );
+      }
+    }
 
     await db.commit.update({
       where: {

@@ -27,7 +27,11 @@ const imageGenerationAi = new GoogleGenerativeAI(imageGenerationApiKey)
 export const imageGenerationModel = imageGenerationAi.getGenerativeModel({
   model: "gemini-2.0-flash-exp-image-generation",
   generationConfig: {
-    // @ts-ignore
+    // @typescript-eslint/ban-ts-comment
+    // @ts-expect-error: responseModalities is not recognized in the type definition
     responseModalities: ['Text', 'Image']
   },
+  systemInstructions: {
+    prompt: "Generate an image based on the prompt"
+  }
 });

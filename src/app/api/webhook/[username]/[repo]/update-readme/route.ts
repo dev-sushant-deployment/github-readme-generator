@@ -63,6 +63,8 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       - Use images only where necessary and where it makes sense.
   
       Your response should only contain the content of the README.md file.
+      - Do not include response in triple backticks.
+      - Do not include response in code blocks.
   
       If there are no changes in the README.md file, you can should respond with just a message saying "No changes in README.md file".
   

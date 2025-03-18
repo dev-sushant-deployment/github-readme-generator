@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(req: NextRequest) {
   try {
-    const prompt = req.nextUrl.searchParams.get('prompt');
+    const prompt = "Create an image based on below description: " + req.nextUrl.searchParams.get('prompt');
     if (!prompt) {
       throw new Error("Prompt is required");
     }
