@@ -4,9 +4,13 @@ import { db } from "@/lib/db";
 import axios from "axios";
 
 export const getImage = async (prompt: string) => {
-  const { data: id } = await axios.get(`${process.env.DOMAIN}/api/image-generation?prompt=${prompt}`);
-  const { data: url } = await axios.get(`${process.env.DOMAIN}/api/upload-cloudinary?id=${id}`);
-  return url;
+  try {
+    const { data: id } = await axios.get(`${process.env.DOMAIN}/api/image-generation?prompt=${prompt}`);
+    const { data: url } = await axios.get(`${process.env.DOMAIN}/api/upload-cloudinary?id=${id}`);
+    return url;
+  } catch {
+    return null;
+  }
 }
 
 export const generateAllImages = async (id: string) => {
@@ -33,10 +37,17 @@ export const generateAllImages = async (id: string) => {
     for (const image of images) {
       const url = await getImage(image.prompt);
       if (markdown) {
-        markdown = markdown.replace(
-          `![${image.prompt}](${image.position})`,
-          `![${image.prompt}](${url})`
-        );
+        if (url) {
+          markdown = markdown.replace(
+            `![${image.prompt}](${image.position})`,
+            `![${image.prompt}](${url})`
+          );
+        } else {
+          markdown = markdown.replace(
+            `![${image.prompt}](${image.position})`,
+            ``
+          );
+        }
       }
     }
 

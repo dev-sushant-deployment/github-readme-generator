@@ -31,10 +31,17 @@ export const GenerateReadme = () => {
     await Promise.all(
       images.map(async (image) => {
         const url = await getImage(image.prompt);
-        setMarkdown(prev => prev.replace(
-          `![${image.prompt}](${image.position})`,
-          `![${image.prompt}](${url})`
-        ))
+        if (url) {
+          setMarkdown(prev => prev.replace(
+            `![${image.prompt}](${image.position})`,
+            `![${image.prompt}](${url})`
+          ))
+        } else {
+          setMarkdown(prev => prev.replace(
+            `![${image.prompt}](${image.position})`,
+            ``
+          ))
+        }
       })
     );
   }
