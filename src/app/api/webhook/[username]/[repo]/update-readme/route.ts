@@ -115,7 +115,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
         status: CommitStatus.UPDATED
       }
     });
-    generateAllImages(commitId);
+    await generateAllImages(commitId);
     return NextResponse.json({ message: "README.md updated" });
   } catch (error) {
     if (commitId) {

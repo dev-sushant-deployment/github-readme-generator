@@ -149,7 +149,7 @@ export async function POST(req : NextRequest, { params } : InitialCommitRoutePar
         status: CommitStatus.UPDATED
       }
     });
-    generateAllImages(commitId);
+    await generateAllImages(commitId);
     return NextResponse.json({ message: "README.md file generated" });
   } catch (error) {
     await db.commit.update({
