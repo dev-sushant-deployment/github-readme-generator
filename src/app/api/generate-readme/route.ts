@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
       - Where necessary, code snippets should be included.
       - Also include the installation steps.
       - Also include logos, badges, and other necessary images, publicily accessible, where necessary.
-
+${process.env.GENERATE_IMAGES !== "false" ? `
       Follow the below instruction for images in README.md file:
       - Image will be generated use ai model for image generation.
       - So, you need to provide the prompt for image generation.
@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
       - Make sure to include one cover image at the top of the README.md file for the complete project.
       - Do not provide prompts explicityly other than inside the alt text of the image.
       - Use images only where necessary and where it makes sense.
-
+` : ""}
       Your response should only contain the content of the README.md file.
       - Do not include response in triple backticks.
       - Do not include response in code blocks.

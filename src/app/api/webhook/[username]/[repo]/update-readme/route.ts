@@ -60,7 +60,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       README.md file should be written in markdown format.
       README.md file should not be too short or too long. It should be concise and informative.
       It should contain all the necessary information about the repository(project).
-
+${process.env.GENERATE_IMAGES !== "false" ? `
       Follow the below instruction for images in README.md file:
       - Image will be generated use ai model for image generation.
       - So, you need to provide the prompt for image generation.
@@ -74,7 +74,7 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
 
       - Do not provide prompts explicitly other than inside the alt text of the image.
       - Use images only where necessary and where it makes sense.
-  
+` : ""}
       Your response should only contain the content of the README.md file.
       - Do not include response in triple backticks.
       - Do not include response in code blocks.
@@ -128,7 +128,9 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
         status: CommitStatus.UPDATED
       }
     });
-    await generateAllImages(commitId);
+    if (process.env.GENERATE_IMAGES !== "false") {
+      await generateAllImages(commitId);
+    }
     return NextResponse.json({ message: "README.md updated" });
   } catch (error) {
     if (commitId) {
