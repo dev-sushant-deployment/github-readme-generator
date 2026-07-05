@@ -133,6 +133,7 @@ ${process.env.GENERATE_IMAGES !== "false" ? `
     }
     return NextResponse.json({ message: "README.md updated" });
   } catch (error) {
+    console.error("update-readme Route Error:", error);
     if (commitId) {
       await db.commit.update({
         where: {

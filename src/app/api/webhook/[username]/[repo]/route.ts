@@ -58,7 +58,12 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       if (!readmeFile) {
         console.log("No README.md file found");
         const baseUrl = req.nextUrl.origin;
-        await axios.post(`${baseUrl}/api/webhook/${username}/${repo}/update-readme`, { files, commitId });
+        console.log("update-readme baseUrl:", baseUrl);
+        await axios.post(`${baseUrl}/api/webhook/${username}/${repo}/update-readme`, { files, commitId }, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
       }
       else {
         const { data : { content } } = await axios.get(`https://api.github.com/repos/${username}/${repo}/contents/README.md`, {
@@ -79,6 +84,10 @@ export async function POST(req : NextRequest, { params } : WebhookRouteParams) {
       }
       return NextResponse.json({ message: "Commit received" });
     } catch (error) {
+      console.error("Webhook Route Error:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error Response Data:", error.response?.data);
+      }
       if (commitId) await db.commit.update({
         where: {
           id: commitId
